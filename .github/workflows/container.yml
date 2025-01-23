@@ -1,0 +1,54 @@
+name: deploy-container
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'packages/container/**'
+
+defaults:
+    run:
+        working-directory: packages/container
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2         
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Build container
+              run: npm run build
+
+            - name: get access to aws cli
+              run : shinyinc/action-aws-cli@v1.2
+
+            - name: run on awc cli
+              run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest
+              env:
+                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  
+
+            # - name: Login to GitHub Container Registry
+            #   run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            # - name: Tag container
+            #   run: docker tag container ghcr.io/${{ github.repository_owner }}/container:latest
+
+            # - name: Push container
+            #   run: docker push ghcr.io/${{ github.repository_owner }}/container:latest
+
+            # - name: Deploy container
+            #   run: |
+            #       curl -X POST https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_APP_ID }}/deployments \
+            #       -H "Content-Type: application/json" \
+            #       -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" \
+            #       -d '{
+            #           "image": "ghcr.io/${{ github.repository_owner }}/container:latest"
+            #       }'
