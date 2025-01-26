@@ -24,12 +24,21 @@ jobs:
 
             - name: Build container
               run: npm run build
+              env: 
+                PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
 
             - name: get access to aws cli
               run : shinyinc/action-aws-cli@v1.2
 
             - name: run on awc cli
               run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest
+              env:
+                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+
+            - name: invallidate index.html
+              run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/container/latest/index.html"
               env:
                   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
