@@ -21,7 +21,7 @@ const MarketingApp = () => {
     history.listen(onParentNavigate)
   }, []);
 
-  return <div className="ll" ref={ref}></div>;
+  return <div className="" ref={ref}></div>;
 };
 
 export default MarketingApp;

@@ -5,7 +5,7 @@ import App from "./App";
 import { createMemoryHistory, createBrowserHistory } from "history";
 
 // mount function ton start app
-const mount = (el, { onNavigate, defaultHistory, initialPath }) => {
+const mount = (el, { onNavigate, defaultHistory, initialPath, onSignIn }) => {
   // listens to itself for navigation and passes the pathname to container
   // defaultHistory = createBrowserHistory which is for dev mode in isolation
   // createMemoryHistory is for production or dev in container
@@ -17,7 +17,8 @@ const mount = (el, { onNavigate, defaultHistory, initialPath }) => {
     history.listen(onNavigate);
   }
 
-  ReactDOM.render(<App history={history} />, el);
+
+  ReactDOM.render(<App onSignIn={onSignIn} history={history} />, el);
 
   return {
     // gets navigated pathname from container and passes it to itself
