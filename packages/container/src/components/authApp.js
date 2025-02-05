@@ -1,13 +1,14 @@
-import { mount } from "marketing/MarketingApp";
+import { mount as mountAuth } from "auth/AuthApp";
 import React, { useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 
-const MarketingApp = () => {
+const AuthApp = () => {
   const ref = useRef(null);
   const history = useHistory();
 
   useEffect(() => {
-    const { onParentNavigate } = mount(ref.current, {
+    const { onParentNavigate } = mountAuth(ref.current, {
+      // iniital path for subapp without initial directory
       initialPath : history?.location?.pathname,
     // gets navigated pathname from container and passes it to itself
       onNavigate: ({ pathname: nextPathName }) => {
@@ -21,7 +22,7 @@ const MarketingApp = () => {
     history.listen(onParentNavigate)
   }, []);
 
-  return <div className="ll" ref={ref}></div>;
+  return <div className="" ref={ref}></div>;
 };
 
-export default MarketingApp;
+export default AuthApp;
